@@ -1,0 +1,28 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Bút bi",
+      "category": "bút",
+      "price": 6000,
+      "description": "Bút bi có hình dáng đẹp, mực khô nhanh",
+      "features": [ "Nhiều màu sắc", "Có nhiều loại vỏ"]
+    },
+    {
+      "id": 2,
+      "name": "Vở 96 trang",
+      "category": "Sách vở",
+      "price": 5000,
+      "description": "Vở không lem, dày, chất lượng cao",
+      "features": ["Có nhiều loại bìa", "Nhiều loại ô ly"]
+    },
+    {
+      "id": 3,
+      "name": "Bút xóa",
+      "category": "Bút",
+      "price": 12000,
+      "description": "Xóa sạch các vết mực, thơm, không gây lem",
+      "features": ["Nhiều loại thiết kế"]
+    }
+  ]
+}
