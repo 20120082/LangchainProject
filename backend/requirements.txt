@@ -3,3 +3,6 @@ flask-cors
 langchain
 python-dotenv
 langchain-google-genai
+
+pymysql
+cryptography

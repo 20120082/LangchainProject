@@ -6,6 +6,7 @@ import json
 import os
 from dotenv import load_dotenv
 from flask_cors import CORS
+import pymysql
 
 
 # Load API key
@@ -16,8 +17,20 @@ app = Flask(__name__)
 CORS(app)
 
 # Load product database
-with open('products.json', 'r', encoding='utf-8') as f:
-    products_data = json.load(f)
+def fetch_products_from_mysql():
+    conn = pymysql.connect(
+        host='localhost',
+        user='root',
+        password='root',
+        database='langchain',
+        charset='utf8mb4'
+    )
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("SELECT * FROM products")
+    products = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return products
 
 # Initialize Gemini model
 llm = GoogleGenerativeAI(model="gemini-2.0-flash",google_api_key=api_key, temperature=0.7)
@@ -34,14 +47,16 @@ conversation = ConversationChain(
 
 def get_product_info():
     """Convert product data to text for the AI"""
+    products = fetch_products_from_mysql()
     product_text = "Thông tin sản phẩm:\n"
-    for product in products_data['products']:
+    for product in products:
+        feature = ', '.join(json.loads(product['feature']))
         product_text += f"""
         - Tên: {product['name']}
           Danh mục: {product['category']}
           Giá: {product['price']:,} VND
           Mô tả: {product['description']}
-          Tính năng: {', '.join(product['features'])}
+          Tính năng: {feature}
         """
     return product_text
 
