@@ -1,62 +1,51 @@
 from flask import Flask, request, jsonify
+from langchain_google_genai import GoogleGenerativeAI
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationChain
 import json
 import os
 from dotenv import load_dotenv
 from flask_cors import CORS
-from config import AI_PROVIDER
-import pymysql
 
 
 # Load API key
 load_dotenv()
+api_key = os.getenv("GOOGLE_API_KEY")
 
-# api_key = os.getenv("GOOGLE_API_KEY")
-if AI_PROVIDER == 'google':
-    from ai_providers.google_ai import build_conversation_chain
-else:
-    from ai_providers.openai import build_conversation_chain
-
-# Flask setup
 app = Flask(__name__)
 CORS(app)
 
-# Khởi tạo conversation
-conversation = build_conversation_chain()
+# Load product from json
+with open('products.json', 'r', encoding='utf-8') as f:
+    products_data = json.load(f)
 
-# Load product database
-def fetch_products_from_mysql():
-    conn = pymysql.connect(
-        host='localhost',
-        user='root',
-        password='root',
-        database='langchain',
-        charset='utf8mb4'
-    )
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-    cursor.execute("SELECT * FROM products")
-    products = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return products
+# Initialize Gemini model
+llm = GoogleGenerativeAI(model="gemini-2.0-flash",google_api_key=api_key, temperature=0.7)
+
+# Create conversation memory
+memory = ConversationBufferMemory()
+
+# Create conversation chain
+conversation = ConversationChain(
+    llm=llm,
+    memory=memory,
+    verbose=True
+)
 
 def get_product_info():
     """Convert product data to text for the AI"""
-    products = fetch_products_from_mysql()
     product_text = "Thông tin sản phẩm:\n"
-    for product in products:
-        feature = ', '.join(json.loads(product['feature']))
+    for product in products_data['products']:
         product_text += f"""
         - Tên: {product['name']}
           Danh mục: {product['category']}
           Giá: {product['price']:,} VND
           Mô tả: {product['description']}
-          Tính năng: {feature}
+          Tính năng: {', '.join(product['features'])}
         """
     return product_text
 
-#define route cho app
 @app.route('/api/chat', methods=['POST'])
-
 def chat():
     user_message = request.json.get('message')
     
@@ -71,7 +60,7 @@ def chat():
     {product_info}
     
     Lịch sử trò chuyện:
-    {conversation.memory.load_memory_variables({})['history']}
+    {memory.load_memory_variables({})['history']}
     
     Câu hỏi của khách hàng: {user_message}
     
@@ -83,7 +72,7 @@ def chat():
     
     return jsonify({
         'response': response,
-        'history': conversation.memory.load_memory_variables({})['history']
+        'history': memory.load_memory_variables({})['history']
     })
 
 if __name__ == '__main__':

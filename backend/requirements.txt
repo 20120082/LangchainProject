@@ -6,3 +6,7 @@ langchain-google-genai
 
 pymysql
 cryptography
+
+openai
+langchain-openai
+langchain-community
