@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function addBotMessage(message) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', 'bot-message');
-        messageDiv.textContent = message;
+        messageDiv.innerHTML = message.replace(/\n/g, "<br>");;
         chatHistory.appendChild(messageDiv);
         scrollToBottom();
     }
