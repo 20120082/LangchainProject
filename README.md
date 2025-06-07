@@ -1,10 +1,14 @@
 # LangchainProject
 
-## Cách sử dụng:
-B1:Lấy API Key từ Google AI Studio, thay thế api-key trong file .env trong folder backend  
-B2:Tải các thư viện python cần thiết có trong file requirements.txt bằng lệnh pip install -r backend/requirements.txt (yêu cầu python 3.10 trở lên)  
-B3:Chạy backend: Tới đường dẫn backend bằng lệnh cd backend, chạy backend bằng lệnh python app.py  
-B4:Chạy Frontend: index.html
+## Cách setup:
+B1: Lấy API Key từ Google AI Studio, thay thế api-key trong file .env trong folder backend
+B2(optional): Lấy API Key từ OpenAI, cần phải liên kết thẻ credit card mới dùng được
+B3: Tải các thư viện python cần thiết có trong file requirements.txt bằng lệnh pip install -r backend/requirements.txt (yêu cầu python 3.10 trở lên)  
+B4: Tải WAMP server cho Windows (MAMP cho MacOS) và set up mySQL. Tạo CSDL langchain (có thể dùng tên khác nhưng cần chỉnh lại trong app.py). Import file products.sql để import table products. 
+
+## Cách chạy:
+B1:Chạy backend: Tới đường dẫn backend bằng lệnh cd backend, chạy backend bằng lệnh python app.py  
+B2:Chạy Frontend: index.html
 
 ## Update note:
 1.Chuyển sang dùng cơ sở dữ liệu mySQL thay vì file json. mySQL cài từ WAMP và quản lý bởi phpAdmin.
